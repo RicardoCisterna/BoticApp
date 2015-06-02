@@ -12,6 +12,7 @@ import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -68,6 +69,14 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
 
         data.cerrar();
         txtNombre = (EditText)findViewById(R.id.TxtNombre);
+
+        txtNombre.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(contexto, TipoDeBusqueda.class);
+                startActivity(myIntent);
+            }
+        });
     }
 
     @Override

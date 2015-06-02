@@ -5,4 +5,9 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">Map</string>
     <string name="buscador">Busca Medicamento o Farmacia </string>
+    <string name="title_activity_tipo_de_busqueda">Tipo De Búsqueda</string>
+    <string name="tipo_busqueda_opcion_medicamento">Medicamento</string>
+    <string name="tipo_busqueda_opcion_Farmacia">Farmacia</string>
+    <string name="title_activity_busqueda_medicamento">Medicamento</string>
+    <string name="title_activity_busqueda_farmacia">Farmacia</string>
 </resources>
