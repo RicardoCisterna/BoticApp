@@ -6,7 +6,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class BusquedaFarmacia extends ActionBarActivity {
+public class BusquedaFarmacia extends ActionBarActivity
+{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
