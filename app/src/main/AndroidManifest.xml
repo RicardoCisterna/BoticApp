@@ -43,14 +43,6 @@
             android:name=".TipoDeBusqueda"
             android:label="@string/title_activity_tipo_de_busqueda" >
         </activity>
-        <activity
-            android:name=".BusquedaMedicamento"
-            android:label="@string/title_activity_busqueda_medicamento" >
-        </activity>
-        <activity
-            android:name=".BusquedaFarmacia"
-            android:label="@string/title_activity_busqueda_farmacia" >
-        </activity>
     </application>
 
 </manifest>

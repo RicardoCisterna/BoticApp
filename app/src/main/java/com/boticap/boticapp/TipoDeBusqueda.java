@@ -1,46 +1,71 @@
 package com.boticap.boticapp;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
 
 public class TipoDeBusqueda extends ActionBarActivity {
 
-    private Button button1;
-    private Button button2;
     private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tipo_de_busqueda);
+        //setContentView(R.layout.activity_tipo_de_busqueda);
 
         context = getApplicationContext();
 
-        button1 = (Button)findViewById(R.id.button1);
-        button1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentMedicamento = new Intent(context, BusquedaMedicamento.class);
-                startActivity(intentMedicamento);
-            }
-        });
-        button2 = (Button)findViewById(R.id.button2);
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentFarmacia = new Intent(context, BusquedaFarmacia.class);
-                startActivity(intentFarmacia);
-            }
-        });
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("BoticApp");
+
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        /**CREAR TABS**/
+        ActionBar.Tab tab = actionBar.newTab()
+                .setText("Medicamento")
+                .setTabListener(new TabsListener(
+                        this, "medicamentos", FragmentMedicamento.class));
+        actionBar.addTab(tab);
+
+        tab = actionBar.newTab()
+                .setText("Farmacia")
+                .setTabListener(new TabsListener(
+                        this, "farmacia", FragmentFarmacia.class));
+        actionBar.addTab(tab);
+
     }
 
+    public class TabsListener implements ActionBar.TabListener{
+
+        private Fragment fragment;
+        private final String tag;
+
+        public TabsListener(Activity activity, String tag, Class cls){
+            this.tag = tag;
+            fragment = Fragment.instantiate(activity, cls.getName());
+        }
+
+        @Override
+        public void onTabSelected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
+            ft.replace(android.R.id.content, fragment, tag);
+        }
+
+        @Override
+        public void onTabUnselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
+            ft.remove(fragment);
+        }
+
+        @Override
+        public void onTabReselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
+
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
