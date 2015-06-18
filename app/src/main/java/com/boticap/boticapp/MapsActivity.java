@@ -67,7 +67,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
                             .position(lat)
             );
         }
-
+        //this.deleteDatabase("boticapp.db");
         data.cerrar();
         txtNombre = (EditText)findViewById(R.id.TxtNombre);
 
