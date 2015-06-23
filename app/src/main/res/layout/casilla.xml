@@ -4,11 +4,9 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/casilla"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/text_farmacias_cercanas"
-        android:text="@string/farmacias_cercanas"
-        android:clickable="true"
-        android:textSize="30sp"/>
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 </LinearLayout>

@@ -11,9 +11,9 @@ import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -24,9 +24,16 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements LocationListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private EditText txtNombre;
     private DataSource data;
     Context contexto;
+
+    Location location = null;
+    Double latitude;
+    Double longitude;
+    LocationManager locationManager;
+    boolean isGPSEnabled = false;
+    boolean isNetworkEnabled = false;
+    boolean canGetLocation = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,15 +42,21 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
         setUpMapIfNeeded();
         mMap.setMyLocationEnabled(true);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
 
-        contexto = this.getApplicationContext();
+        contexto = this;
 
+        //evalua si está encendido el gps
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
         String provider = lm.getBestProvider(new Criteria(), true);
-        //System.out.println("MAIN: " + provider + " proveeeedor");
         if(provider.equals("passive")){
-            onProviderDisabled(provider);
+            dialogGPS();
         }
+        else{
+            onProviderEnabled(provider);
+        }
+
+
 
         data = new DataSource(contexto);
         try {
@@ -69,15 +82,65 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
         }
         //this.deleteDatabase("boticapp.db");
         data.cerrar();
-        txtNombre = (EditText)findViewById(R.id.TxtNombre);
+    }
 
-        txtNombre.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent myIntent = new Intent(contexto, TipoDeBusqueda.class);
-                startActivity(myIntent);
+    public Location getLocation() {
+        try {
+            locationManager = (LocationManager) this.getApplicationContext()
+                    .getSystemService(LOCATION_SERVICE);
+
+            // getting GPS status
+            isGPSEnabled = locationManager
+                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            // getting network status
+            isNetworkEnabled = locationManager
+                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            if (!isGPSEnabled && !isNetworkEnabled) {
+                this.canGetLocation = false;
+            } else {
+                this.canGetLocation = true;
+                if (isNetworkEnabled) {
+                    locationManager.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER,
+                            60000,
+                            100, this);
+                    Log.d("Network", "Network Enabled");
+                    if (locationManager != null) {
+                        location = locationManager
+                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        if (location != null) {
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                        }
+                    }
+                }
+                // if GPS Enabled get lat/long using GPS Services
+                if (isGPSEnabled) {
+                    if (location == null) {
+                        locationManager.requestLocationUpdates(
+                                LocationManager.GPS_PROVIDER,
+                               60000,
+                                100, this);
+                        Log.d("GPS", "GPS Enabled");
+                        if (locationManager != null) {
+                            location = locationManager
+                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            if (location != null) {
+                                latitude = location.getLatitude();
+                                longitude = location.getLongitude();
+                            }
+                        }
+                    }
+                }
             }
-        });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return location;
     }
 
     @Override
@@ -111,22 +174,10 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-
     }
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    public void dialogGPS(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(contexto);
         builder.setTitle("Gps desactivado");
         builder.setCancelable(false);
         builder.setPositiveButton("Activar GPS", new DialogInterface.OnClickListener(){
@@ -144,5 +195,34 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public void moverCamara(){
+        Location ubicacion = getLocation();
+        if (ubicacion != null) {
+            CameraUpdate camera = CameraUpdateFactory.newLatLng(new LatLng(ubicacion.getLatitude(), ubicacion.getLongitude()));
+            CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
+            mMap.moveCamera(camera);
+            mMap.animateCamera(zoom);
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        if (status == 2){//disponible
+            moverCamara();
+        }
+        else{
+            //esperar al cambio de status
+        }
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        moverCamara();
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
     }
 }

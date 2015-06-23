@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
         handler.postDelayed(new Runnable() {
             public void run() {
                 // acciones que se ejecutan tras los milisegundos
-                Intent intent = new Intent(contexto,MapsActivity.class);
+                Intent intent = new Intent(contexto,TipoDeBusqueda.class);
                 startActivity(intent);
                 finish();
             }
