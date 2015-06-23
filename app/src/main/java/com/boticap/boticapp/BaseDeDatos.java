@@ -21,6 +21,13 @@ public class BaseDeDatos extends SQLiteOpenHelper {
                     + TITULO + " text, "
                     + FRAGMENTO + " text, "
                     + COORDENADAS + " text);";
+    private static final String DATOS_1 =
+            "insert into " + TITULO_TABLA + " (" + TITULO + "," + FRAGMENTO + "," + COORDENADAS + ") values ('Farmacia Cruz Verde','Estacion Central','-33.452228 -70.682610')";
+    private static final String DATOS_2 =
+            "insert into " + TITULO_TABLA + " (" + TITULO + "," + FRAGMENTO + "," + COORDENADAS + ") values ('Farmacia Salcobrand', 'Estación Central','-33.453660 -70.688318')";
+    private static final String DATOS_3 =
+            "insert into " + TITULO_TABLA + " (" + TITULO + "," + FRAGMENTO + "," + COORDENADAS + ") values ('Farmacia Hanneman','Estación Central','-33.450814 -70.679435')";
+
 
     public BaseDeDatos(Context context){
         super(context, DB_NOMBRE, null, DB_VERSION);
@@ -28,7 +35,11 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         db.execSQL(DB_CREATE);
+        db.execSQL(DATOS_1);
+        db.execSQL(DATOS_2);
+        db.execSQL(DATOS_3);
     }
 
     @Override

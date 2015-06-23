@@ -6,17 +6,17 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <EditText android:id="@+id/TxtNombre"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
             android:layout_margin="30dp"
             android:padding="5dip"
             android:background="@drawable/bordes_redondos"
             android:hint="@string/buscador"
-            android:textColorHint="#20B918"
+            android:textColorHint="#000000"
             android:cursorVisible="false"
         />
     </LinearLayout>

@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class DataSource {
     BaseDeDatos bdSQLHelper;
@@ -37,8 +36,8 @@ public class DataSource {
         db.insert(BaseDeDatos.TITULO_TABLA, null, v);
     }
 
-    public List<Marcador> obtenerMarcadores(){
-        List<Marcador> m = new ArrayList<Marcador>();
+    public ArrayList<Marcador> obtenerMarcadores(){
+        ArrayList<Marcador> m = new ArrayList<Marcador>();
         Cursor cursor = db.query(BaseDeDatos.TITULO_TABLA, cols, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()){

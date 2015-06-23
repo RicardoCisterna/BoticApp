@@ -8,7 +8,6 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -54,7 +53,9 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
             Log.i("hola", "hola");
         }
 
-        //data.agregarMarcadores(new Marcador("Farmacia Ahumada", "Farmacia La Florida", "-33.522645 -70.579160"));
+        //data.agregarMarcadores(new Marcador("Farmacia Cruz Verde", "Estación Central", "-33.452228 -70.682610"));
+        //data.agregarMarcadores(new Marcador("Farmacia Salcobrand", "Estación Central", "-33.453660 -70.688318"));
+        //data.agregarMarcadores(new Marcador("Farmacia Hanneman", "Estación Central", "-33.450814 -70.679435"));
 
         List<Marcador> m = data.obtenerMarcadores();
         for (int i=0; i < m.size(); i++){
@@ -66,7 +67,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
                             .position(lat)
             );
         }
-
+        //this.deleteDatabase("boticapp.db");
         data.cerrar();
         txtNombre = (EditText)findViewById(R.id.TxtNombre);
 

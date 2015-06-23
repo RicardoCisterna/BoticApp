@@ -21,6 +21,11 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <meta-data
@@ -33,23 +38,10 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".TipoDeBusqueda"
             android:label="@string/title_activity_tipo_de_busqueda" >
-        </activity>
-        <activity
-            android:name=".BusquedaMedicamento"
-            android:label="@string/title_activity_busqueda_medicamento" >
-        </activity>
-        <activity
-            android:name=".BusquedaFarmacia"
-            android:label="@string/title_activity_busqueda_farmacia" >
         </activity>
     </application>
 

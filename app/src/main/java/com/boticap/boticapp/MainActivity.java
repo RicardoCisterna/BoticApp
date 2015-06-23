@@ -1,24 +1,38 @@
 package com.boticap.boticapp;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class BusquedaMedicamento extends ActionBarActivity {
+public class MainActivity extends Activity {
 
+    Context contexto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_busqueda_medicamento);
-    }
+        setContentView(R.layout.activity_main);
 
+        Handler handler = new Handler();
+        contexto = this.getApplicationContext();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                // acciones que se ejecutan tras los milisegundos
+                Intent intent = new Intent(contexto,MapsActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }, 5000);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_busqueda_medicamento, menu);
+        //getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
