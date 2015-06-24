@@ -113,7 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /*
  * Creating a Farmacia
  */
-    public long createToDo(Farmacia farmacia) {
+    public long createFarmacia(Farmacia farmacia) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -169,6 +169,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return td;
     }
+
+
     //Remedio
     public Remedio getRemedio(long remedio_id) {
         SQLiteDatabase db = this.getReadableDatabase();
