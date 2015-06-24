@@ -29,9 +29,9 @@ public class MainActivity extends Activity {
         db = new DatabaseHelper(getApplicationContext());
 
         //Farmacias
-        Farmacia far1=new Farmacia("-33.453114 -70.682136","Obpo Javier Vásquez Valencia 3455","Cruz Verde");
-        Farmacia far2=new Farmacia("-33.454059 -70.692502","Av Libertador Bernardo O'Higgins 4131, Estación","Farmacia Doctor Simi");
-        Farmacia far3=new Farmacia("-33.456762 -70.701965","Avenida Liber Bernardo O'higgins 4850","Farmacias Salcobrand");
+        Farmacia far1=new Farmacia("-33.453114 -70.682136","Obpo Javier Vasquez Valencia 3455","Cruz Verde");
+        Farmacia far2=new Farmacia("-33.454059 -70.692502","Av Libertador Bernardo OHiggins 4131, Estacion","Farmacia Doctor Simi");
+        Farmacia far3=new Farmacia("-33.456762 -70.701965","Av Libertador Bernardo Ohiggins 4850","Farmacias Salcobrand");
 
         //guardar farmacias BD
         long  far1_id=db.createFarmacia(far1);

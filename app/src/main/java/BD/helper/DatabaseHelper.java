@@ -139,7 +139,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_COMENTARIO, remedio.getComentario());
 
         // insert row
-        long Remedio_id = db.insert(TABLE_FARMACIA_REMEDIO, null, values);
+        long Remedio_id = db.insert(TABLE_REMEDIO, null, values);
 
         return Remedio_id;
     }
@@ -175,7 +175,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Remedio getRemedio(long remedio_id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = "SELECT  * FROM " + TABLE_FARMACIA + " WHERE "
+        String selectQuery = "SELECT  * FROM " + TABLE_REMEDIO + " WHERE "
                 + KEY_ID + " = " + remedio_id;
 
         Log.e(LOG, selectQuery);
