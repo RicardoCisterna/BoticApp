@@ -12,4 +12,5 @@
     <string name="title_activity_busqueda_farmacia">Farmacia</string>
     <string name="buscador_medicamento">Busca Medicamento</string>
     <string name="farmacias_cercanas">Ver Farmacias Cercanas</string>
+    <string name="title_activity_medicamento_en_farmacia">Medicamento</string>
 </resources>

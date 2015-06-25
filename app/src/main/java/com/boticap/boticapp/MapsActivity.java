@@ -16,7 +16,9 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
@@ -66,10 +68,6 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
             Log.i("hola", "hola");
         }
 
-        //data.agregarMarcadores(new Marcador("Farmacia Cruz Verde", "Estación Central", "-33.452228 -70.682610"));
-        //data.agregarMarcadores(new Marcador("Farmacia Salcobrand", "Estación Central", "-33.453660 -70.688318"));
-        //data.agregarMarcadores(new Marcador("Farmacia Hanneman", "Estación Central", "-33.450814 -70.679435"));
-
         List<Marcador> m = data.obtenerMarcadores();
         for (int i=0; i < m.size(); i++){
             String[] pos = m.get(i).getCoordenadas().split(" ");
@@ -77,9 +75,20 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
             mMap.addMarker(new MarkerOptions()
                             .title(m.get(i).getTitulo())
                             .snippet(m.get(i).getFragmento())
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                             .position(lat)
             );
         }
+
+        //marcador clickeable
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Intent miIntent = new Intent(contexto, MedicamentoEnFarmacia.class);
+                miIntent.putExtra("id", marker.getId());
+                startActivity(miIntent);
+            }
+        });
         //this.deleteDatabase("boticapp.db");
         data.cerrar();
     }
