@@ -9,15 +9,25 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 
-public class TipoDeBusqueda extends ActionBarActivity {
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SearchView.OnQueryTextListener;
+
+import android.widget.Toast;
+
+
+
+public class TipoDeBusqueda extends ActionBarActivity implements  OnQueryTextListener, OnActionExpandListener {
 
     private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tipo_de_busqueda);
+
+
 
         context = getApplicationContext();
 
@@ -39,6 +49,28 @@ public class TipoDeBusqueda extends ActionBarActivity {
                         this, "farmacia", FragmentFarmacia.class));
         actionBar.addTab(tab);
 
+    }
+
+    @Override
+    public boolean onMenuItemActionExpand(MenuItem item) {
+        Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemActionCollapse(MenuItem item) {
+        Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return true;
     }
 
     public class TabsListener implements ActionBar.TabListener{
@@ -71,9 +103,18 @@ public class TipoDeBusqueda extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_tipo_de_busqueda, menu);
-        return true;
-    }
+        setContentView(R.layout.activity_tipo_de_busqueda);
+        getMenuInflater().inflate(R.menu.menu_busqueda_medicamento, menu);
 
+        MenuItem searchItem = menu.findItem(R.id.menu3_buscar);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(this);
+
+        MenuItemCompat.setOnActionExpandListener(searchItem, this);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+/* por ahora no tiene sentido
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -88,4 +129,5 @@ public class TipoDeBusqueda extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    */
 }

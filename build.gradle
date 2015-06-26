@@ -12,8 +12,8 @@ buildscript {
     }
 }
 
-allprojects {
-    repositories {
-        jcenter()
+    allprojects {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:deprecation"
+        }
     }
-}
