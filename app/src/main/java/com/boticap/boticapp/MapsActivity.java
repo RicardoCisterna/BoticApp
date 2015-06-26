@@ -23,11 +23,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
+import BD.helper.DatabaseHelper;
+import BD.model.Farmacia;
+
 public class MapsActivity extends FragmentActivity implements LocationListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private DataSource data;
     Context contexto;
+    DatabaseHelper db;
 
     Location location = null;
     Double latitude;
@@ -47,6 +50,8 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
         contexto = this;
+        db = new DatabaseHelper(getApplicationContext());
+        List<Farmacia> listaFarmacias;
 
         //evalua si está encendido el gps
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -58,39 +63,54 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
             onProviderEnabled(provider);
         }
 
+        final Intent intent = getIntent();
 
-
-        data = new DataSource(contexto);
-        try {
-            data.abrir();
-        }
-        catch (Exception e){
-            Log.i("hola", "hola");
-        }
-
-        List<Marcador> m = data.obtenerMarcadores();
-        for (int i=0; i < m.size(); i++){
-            String[] pos = m.get(i).getCoordenadas().split(" ");
-            LatLng lat = new LatLng(Double.valueOf(pos[0]), Double.valueOf(pos[1]));
-            mMap.addMarker(new MarkerOptions()
-                            .title(m.get(i).getTitulo())
-                            .snippet(m.get(i).getFragmento())
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                            .position(lat)
-            );
-        }
-
-        //marcador clickeable
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                Intent miIntent = new Intent(contexto, MedicamentoEnFarmacia.class);
-                miIntent.putExtra("id", marker.getId());
-                startActivity(miIntent);
+        //Si el intent viene desde el buscador de medicamento y se va a mostrar solamente las farmacias que tienen un X medicamento
+        if (intent.getIntExtra("id_remedio_seleccionado",0) != 0){
+            long id = intent.getIntExtra("id_remedio_seleccionado", 0);
+            listaFarmacias = db.getFarmaciasConXRemedio(id);
+            for (int i = 0; i < listaFarmacias.size(); i++) {
+                String[] pos = listaFarmacias.get(i).getPosicion().split(" ");
+                LatLng latLong = new LatLng(Double.valueOf(pos[0]), Double.valueOf(pos[1]));
+                mMap.addMarker(new MarkerOptions()
+                                .title(listaFarmacias.get(i).getNombre())
+                                .snippet(listaFarmacias.get(i).getDireccion())
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                .position(latLong)
+                );
             }
-        });
+
+            //marcador clickeable
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    Intent miIntent = new Intent(contexto, MedicamentoEnFarmacia.class);
+                    //se envia la posicion de la farmacia para usarla como id
+                    miIntent.putExtra("posicion", marker.getPosition().toString());
+                    //se envia el id del remedio selecciono previamente
+                    long id_remedio_seleccionado = intent.getIntExtra("id_remedio_seleccionado",0);
+                    miIntent.putExtra("id_remedio", id_remedio_seleccionado);
+                    startActivity(miIntent);
+                }
+            });
+        }
+        //si el intent viene del buscador de farmacias, se mostraran todas las farmacias
+        else {
+
+            listaFarmacias = db.getAllFarmacias();
+
+            for (int i = 0; i < listaFarmacias.size(); i++) {
+                String[] pos = listaFarmacias.get(i).getPosicion().split(" ");
+                LatLng latLong = new LatLng(Double.valueOf(pos[0]), Double.valueOf(pos[1]));
+                mMap.addMarker(new MarkerOptions()
+                                .title(listaFarmacias.get(i).getNombre())
+                                .snippet(listaFarmacias.get(i).getDireccion())
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                .position(latLong)
+                );
+            }
+        }
         //this.deleteDatabase("boticapp.db");
-        data.cerrar();
     }
 
     public Location getLocation() {

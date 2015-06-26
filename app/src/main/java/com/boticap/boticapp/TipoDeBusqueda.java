@@ -12,32 +12,38 @@ import android.view.MenuItem;
 
 public class TipoDeBusqueda extends ActionBarActivity {
 
-    private Context context;
+    ActionBar actionBar;
+    ActionBar.Tab tab1;
+    ActionBar.Tab tab2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tipo_de_busqueda);
 
-        context = getApplicationContext();
-
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         actionBar.setTitle("BoticApp");
-
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
         /**CREAR TABS**/
-        ActionBar.Tab tab = actionBar.newTab()
+        tab1 = actionBar.newTab()
                 .setText("Medicamento")
                 .setTabListener(new TabsListener(
                         this, "medicamentos", FragmentMedicamento.class));
-        actionBar.addTab(tab);
+        actionBar.addTab(tab1);
 
-        tab = actionBar.newTab()
+        tab2 = actionBar.newTab()
                 .setText("Farmacia")
                 .setTabListener(new TabsListener(
                         this, "farmacia", FragmentFarmacia.class));
-        actionBar.addTab(tab);
+        actionBar.addTab(tab2);
+
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
     }
 

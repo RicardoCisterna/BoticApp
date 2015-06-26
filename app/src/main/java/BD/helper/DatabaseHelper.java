@@ -1,8 +1,5 @@
 package BD.helper;
 
-/**
- * Created by Ricardo on 23-06-2015.
- */
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -191,7 +188,63 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return td;
     }
 
+    /*
+    Obtener algunos
+    */
+    //todos los remedios asociados a un nombre
+    public List<Remedio> getAllRemediosByName(String nombre_remedio) {
+        List<Remedio> remedios = new ArrayList<Remedio>();
+        String selectQuery = "SELECT * FROM " + TABLE_REMEDIO + " WHERE "
+                + KEY_NOMBRE + " = '" + nombre_remedio + "'";
 
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Remedio td = new Remedio();
+                td.setId(c.getInt((c.getColumnIndex(KEY_ID))));
+                td.setNombre((c.getString(c.getColumnIndex(KEY_NOMBRE))));
+                td.setComentario(c.getString(c.getColumnIndex(KEY_COMENTARIO)));
+
+                // adding to farmacias list
+                remedios.add(td);
+            } while (c.moveToNext());
+        }
+
+        return remedios;
+    }
+
+    //Obtener farmacias que tienen el remedio X
+    public List<Farmacia> getFarmaciasConXRemedio(long id_remedio_x) {
+        List<Farmacia> farmacias = new ArrayList<Farmacia>();
+        String selectQuery = "SELECT  * FROM " + TABLE_FARMACIA + " tf, " + TABLE_FARMACIA_REMEDIO + " tfr WHERE tfr."
+                + KEY_REMEDIO_ID + " = '" + id_remedio_x + "' AND tf." + KEY_ID + " = tfr." + KEY_FARMACIA_ID ;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Farmacia td = new Farmacia();
+                td.setId(c.getInt((c.getColumnIndex(KEY_ID))));
+                td.setNombre((c.getString(c.getColumnIndex(KEY_NOMBRE))));
+                td.setDireccion(c.getString(c.getColumnIndex(KEY_DIRECCION)));
+                td.setPosicion(c.getString(c.getColumnIndex(KEY_POSICION)));
+
+                // adding to farmacias list
+                farmacias.add(td);
+            } while (c.moveToNext());
+        }
+
+        return farmacias;
+    }
 
     /*
  * Obtener Todos
