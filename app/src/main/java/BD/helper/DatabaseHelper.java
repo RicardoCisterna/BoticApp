@@ -7,8 +7,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import BD.model.Comentario;
 import BD.model.Farmacia;
 import BD.model.Remedio;
 
@@ -126,7 +129,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /*
  * Creating Remedio
  */
-    public long createRemedio(Remedio remedio) {
+    public long  createRemedio(Remedio remedio) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -137,6 +140,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long Remedio_id = db.insert(TABLE_REMEDIO, null, values);
 
         return Remedio_id;
+    }
+
+    /*
+    creating comentario
+     */
+    public long createComentario(Comentario comentario, long id_farmacia_remedio){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_FARMACIA_REMEDIO_ID, id_farmacia_remedio);
+        values.put(KEY_COMENTARIO, comentario.getComentario());
+        values.put(KEY_FECHA, comentario.getFechaHora());
+        values.put(KEY_PRECIO, comentario.getPrecio());
+
+        long comentario_id = db.insert(TABLE_COMENTARIO, null, values);
+        return comentario_id;
     }
 
     /*
@@ -171,7 +190,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String selectQuery = "SELECT  * FROM " + TABLE_REMEDIO + " WHERE "
-                + KEY_ID + " = " + remedio_id;
+                + KEY_ID + " = '" + remedio_id + "'";
 
         Log.e(LOG, selectQuery);
 
@@ -186,6 +205,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         td.setComentario(c.getString(c.getColumnIndex(KEY_COMENTARIO)));
 
         return td;
+    }
+
+    /*
+    Obtener el id de una farmacia-remedio
+     */
+    public long getIdFarmaciaRemedio(long remedio_id, long farmacia_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        long id = 0;
+        String selectQuery = "SELECT  * FROM " + TABLE_FARMACIA_REMEDIO + " WHERE "
+                + KEY_FARMACIA_ID + " = '" + farmacia_id + "' AND " + KEY_REMEDIO_ID + " = '" + remedio_id + "'";
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+        Log.i("hola","ENCONTRADAS: " + c.getCount());
+
+        if (c != null  && c.moveToFirst()) {
+            id = c.getInt(c.getColumnIndex(KEY_ID));
+            c.close();
+        }
+
+        return id;
     }
 
     /*
@@ -216,6 +257,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return remedios;
+    }
+
+
+    public List<Comentario> getAllComentariosFarmaciaRemedio(long id_farmacia_remedio) {
+        List<Comentario> comentarios = new ArrayList<Comentario>();
+        String selectQuery = "SELECT * FROM " + TABLE_COMENTARIO + " WHERE "
+                + KEY_FARMACIA_REMEDIO_ID + " = '" + id_farmacia_remedio + "'";
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Comentario td = new Comentario();
+                td.setId(c.getInt((c.getColumnIndex(KEY_ID))));
+                td.setComentario((c.getString(c.getColumnIndex(KEY_COMENTARIO))));
+                td.setFechaHora(c.getString(c.getColumnIndex(KEY_FECHA)));
+                td.setPrecio(c.getInt(c.getColumnIndex(KEY_PRECIO)));
+
+                // adding to farmacias list
+                comentarios.add(td);
+            } while (c.moveToNext());
+        }
+
+        return comentarios;
     }
 
     //Obtener farmacias que tienen el remedio X
