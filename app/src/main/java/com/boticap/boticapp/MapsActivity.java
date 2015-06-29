@@ -21,7 +21,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import BD.helper.DatabaseHelper;
 import BD.model.Farmacia;
@@ -39,6 +41,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
     boolean isGPSEnabled = false;
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;
+    Map haspMap = new HashMap();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,19 +68,23 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
 
         final Intent intent = getIntent();
 
-        //Si el intent viene desde el buscador de medicamento y se va a mostrar solamente las farmacias que tienen un X medicamento
+        //Si el intent viene desde el buscador de medicamento, se va a mostrar solamente las farmacias que tienen un X medicamento
         if (intent.getIntExtra("id_remedio_seleccionado",0) != 0){
             long id = intent.getIntExtra("id_remedio_seleccionado", 0);
             listaFarmacias = db.getFarmaciasConXRemedio(id);
             for (int i = 0; i < listaFarmacias.size(); i++) {
                 String[] pos = listaFarmacias.get(i).getPosicion().split(" ");
                 LatLng latLong = new LatLng(Double.valueOf(pos[0]), Double.valueOf(pos[1]));
-                mMap.addMarker(new MarkerOptions()
-                                .title(listaFarmacias.get(i).getNombre())
-                                .snippet(listaFarmacias.get(i).getDireccion())
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                                .position(latLong)
+                //se agrega un marcador en el mapa
+                Marker m = mMap.addMarker(new MarkerOptions()
+                                    .title(listaFarmacias.get(i).getNombre())
+                                    .snippet(listaFarmacias.get(i).getDireccion())
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                    .position(latLong)
+
                 );
+                //se crea un map donde se relaciona un marker con el id de la farmacia
+                haspMap.put(m.getId(), listaFarmacias.get(i).getId());
             }
 
             //marcador clickeable
@@ -85,10 +92,11 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
                 @Override
                 public void onInfoWindowClick(Marker marker) {
                     Intent miIntent = new Intent(contexto, MedicamentoEnFarmacia.class);
-                    //se envia la posicion de la farmacia para usarla como id
-                    miIntent.putExtra("posicion", marker.getPosition().toString());
-                    //se envia el id del remedio selecciono previamente
+                    int id_farmacia_seleccionada = (Integer) haspMap.get(marker.getId());
+                    //se envia el id de la farmacia seleccionada
+                    miIntent.putExtra("id_farmacia_seleccionada", id_farmacia_seleccionada);
                     long id_remedio_seleccionado = intent.getIntExtra("id_remedio_seleccionado",0);
+                    //se envia el id del remedio seleccionado
                     miIntent.putExtra("id_remedio", id_remedio_seleccionado);
                     startActivity(miIntent);
                 }
