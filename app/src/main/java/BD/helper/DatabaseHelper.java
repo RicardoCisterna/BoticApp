@@ -28,6 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "BoticappBd";
 
+    
     // Table Names
     private static final String TABLE_COMENTARIO = "comentario";
     private static final String TABLE_FARMACIA = "farmacia";
