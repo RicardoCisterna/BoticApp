@@ -8,9 +8,12 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,12 +31,11 @@ import java.util.Map;
 import BD.helper.DatabaseHelper;
 import BD.model.Farmacia;
 
-public class MapsActivity extends FragmentActivity implements LocationListener {
+public class MapsActivity extends ActionBarActivity implements LocationListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     Context contexto;
     DatabaseHelper db;
-
     Location location = null;
     Double latitude;
     Double longitude;
@@ -42,6 +44,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;
     Map haspMap = new HashMap();
+    ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,10 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
         mMap.setMyLocationEnabled(true);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        actionBar = getSupportActionBar();
+        actionBar.setTitle("BoticApp");
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         contexto = this;
         db = new DatabaseHelper(getApplicationContext());
@@ -69,8 +76,8 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
         final Intent intent = getIntent();
 
         //Si el intent viene desde el buscador de medicamento, se va a mostrar solamente las farmacias que tienen un X medicamento
-        if (intent.getIntExtra("id_remedio_seleccionado",0) != 0){
-            long id = intent.getIntExtra("id_remedio_seleccionado", 0);
+        if (intent.getLongExtra("id_remedio_seleccionado", 0) != 0){
+            long id = intent.getLongExtra("id_remedio_seleccionado", 0);
             listaFarmacias = db.getFarmaciasConXRemedio(id);
             for (int i = 0; i < listaFarmacias.size(); i++) {
                 String[] pos = listaFarmacias.get(i).getPosicion().split(" ");
@@ -95,7 +102,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
                     int id_farmacia_seleccionada = (Integer) haspMap.get(marker.getId());
                     //se envia el id de la farmacia seleccionada
                     miIntent.putExtra("id_farmacia_seleccionada", id_farmacia_seleccionada);
-                    long id_remedio_seleccionado = intent.getIntExtra("id_remedio_seleccionado",0);
+                    long id_remedio_seleccionado = intent.getLongExtra("id_remedio_seleccionado",0);
                     //se envia el id del remedio seleccionado
                     miIntent.putExtra("id_remedio", id_remedio_seleccionado);
                     startActivity(miIntent);
@@ -261,5 +268,25 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
 
     @Override
     public void onProviderDisabled(String provider) {
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_maps_activity, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; go home
+                Intent intent = new Intent(this, TipoDeBusqueda.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

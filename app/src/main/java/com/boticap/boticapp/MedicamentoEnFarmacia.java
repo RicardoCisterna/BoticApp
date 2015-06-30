@@ -41,14 +41,19 @@ public class MedicamentoEnFarmacia extends ActionBarActivity {
     MyAdapter mAdapter;
     List<Comentario> listaComentarios;
     ArrayList<String> descripcionComentarios = new ArrayList<String>();
+    ActionBar actionBar;
+    long id_remedio_recibido;
+    long id_farmacia_recibida;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medicamento_en_farmacia);
         contexto = this;
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         actionBar.setTitle("BoticApp");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         bd = new DatabaseHelper(getApplicationContext());
 
         nombreMedicamento = (TextView)findViewById(R.id.nombreMedicamento);
@@ -58,11 +63,11 @@ public class MedicamentoEnFarmacia extends ActionBarActivity {
 
         //recepcion del id del remedio enviado
         Intent miIntent = getIntent();
-        long id_remedio_recibido = miIntent.getLongExtra("id_remedio", 0);
+        id_remedio_recibido = miIntent.getLongExtra("id_remedio", 0);
         Remedio remedio = bd.getRemedio(id_remedio_recibido);
 
         //recepcion del id de la farmacia enviado
-        long id_farmacia_recibida = miIntent.getIntExtra("id_farmacia_seleccionada", 0);
+        id_farmacia_recibida = miIntent.getIntExtra("id_farmacia_seleccionada", 0);
         Log.i("hola", "ID REMEDIO: " + id_remedio_recibido + " ID FARMACIA: " + id_farmacia_recibida);
 
         //obtiene id tabla farmacia_remedio
@@ -129,17 +134,18 @@ public class MedicamentoEnFarmacia extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; go home
+                Intent intent = new Intent(contexto, MapsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Log.i("hoola", "EL ID QUE VUELVO A ENVIAR ES: " + id_remedio_recibido);
+                intent.putExtra("id_remedio_seleccionado", id_remedio_recibido);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

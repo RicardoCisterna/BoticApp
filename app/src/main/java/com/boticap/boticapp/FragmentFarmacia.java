@@ -6,19 +6,20 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class FragmentFarmacia extends Fragment {
 
     View rootView;
-    TextView farmaciasCercanas;
+    Button boton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fm_farmacia, container, false);
 
-        farmaciasCercanas = (TextView) rootView.findViewById(R.id.text_farmacias_cercanas);
-        farmaciasCercanas.setOnClickListener(new View.OnClickListener() {
+        boton = (Button) rootView.findViewById(R.id.boton_farmacias_cercanas);
+        boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent miIntent = new Intent(getActivity(), MapsActivity.class);

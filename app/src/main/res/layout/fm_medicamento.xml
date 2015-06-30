@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginTop="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,7 +14,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/textoBuscador"
             android:layout_weight="5"
-            android:inputType="text"/>
+            android:inputType="text"
+            android:hint="@string/buscar_medicamento"/>
 
         <Button
             android:layout_width="0dp"
@@ -23,11 +25,22 @@
             android:layout_weight="2"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout"
+        android:id="@+id/linearLayoutSinResultados">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/sinResultados"/>
+        </LinearLayout>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/listView"
-        android:layout_below="@+id/linearLayout"
+        android:layout_below="@+id/linearLayoutSinResultados"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 </LinearLayout>
