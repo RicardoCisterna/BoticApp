@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class FragmentMedicamento extends Fragment {
     MyAdapter mAdapter;
     ArrayList<String> nombreRemedios = new ArrayList<String>();
     List<Remedio> remedios;
+    TextView noResultados;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,6 +42,8 @@ public class FragmentMedicamento extends Fragment {
         textoBuscador = (EditText)rootView.findViewById(R.id.textoBuscador);
         botonBuscar = (Button)rootView.findViewById(R.id.botonBuscar);
         listadoMedicamentos = (ListView)rootView.findViewById(R.id.listView);
+        noResultados = (TextView)rootView.findViewById(R.id.sinResultados);
+
         bd = new DatabaseHelper(getActivity());
 
         getActivity().getWindow().setSoftInputMode(
@@ -56,7 +60,7 @@ public class FragmentMedicamento extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent miIntent = new Intent(getActivity(), MapsActivity.class);
-                miIntent.putExtra("id_remedio_seleccionado", remedios.get(position).getId());
+                miIntent.putExtra("id_remedio_seleccionado", (long) remedios.get(position).getId());
                 startActivity(miIntent);
             }
         });
@@ -64,13 +68,14 @@ public class FragmentMedicamento extends Fragment {
         botonBuscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                noResultados.setText("");
                 mAdapter.clear();
                 nombreRemedios.clear();
                 Editable nombreMedicamentoBuscado = textoBuscador.getText();
                 if (nombreMedicamentoBuscado.toString().isEmpty()){
                     new AlertDialog.Builder(getActivity())
                             .setTitle("Error")
-                            .setMessage("Debe ingresar un Medicamento")
+                            .setMessage("Debe ingresar el nombre de un Medicamento.")
                             .setPositiveButton("Ok", null)
                             .show();
                 }
@@ -81,13 +86,20 @@ public class FragmentMedicamento extends Fragment {
                     imm.hideSoftInputFromWindow(textoBuscador.getWindowToken(), 0);
 
                     remedios = bd.getAllRemediosByName(textoBuscador.getText().toString());
-                    for (int i = 0; i < remedios.size(); i++) {
-                        nombreRemedios.add(remedios.get(i).getNombre());
+                    if (remedios.size() == 0){
+                                 noResultados.setText("No se encontraron resultados.");
                     }
-                    mAdapter.addAll(nombreRemedios);
-                    mAdapter.notifyDataSetChanged();
+                    else {
+                        for (int i = 0; i < remedios.size(); i++) {
+                            nombreRemedios.add(remedios.get(i).getNombre());
+                        }
+                        mAdapter.addAll(nombreRemedios);
+                        mAdapter.notifyDataSetChanged();
+                    }
                     textoBuscador.getText().clear();
+
                 }
+
             }
         });
 
