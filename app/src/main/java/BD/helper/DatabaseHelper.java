@@ -74,7 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Comentario table create statement
     private static final String CREATE_TABLE_COMENTARIO = "CREATE TABLE " + TABLE_COMENTARIO
             + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_FARMACIA_REMEDIO_ID + " INTEGER," + KEY_COMENTARIO + " TEXT,"
-            + KEY_FECHA + " DATETIME" + KEY_PRECIO + " INTEGER"+ ")";
+            + KEY_FECHA + " DATETIME," + KEY_PRECIO + " INTEGER"+ ")";
 
     // FarmaciaRemdio table create statement
     private static final String CREATE_TABLE_FARMACIA_REMEDIO = "CREATE TABLE "
@@ -154,6 +154,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_COMENTARIO, comentario.getComentario());
         values.put(KEY_FECHA, comentario.getFechaHora());
         values.put(KEY_PRECIO, comentario.getPrecio());
+
         long comentario_id = db.insert(TABLE_COMENTARIO, null, values);
         return comentario_id;
     }
@@ -166,10 +167,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String selectQuery = "SELECT  * FROM " + TABLE_FARMACIA + " WHERE "
-                + KEY_ID + " = '" + farmacia_id +"'";
+                + KEY_ID + " = " + farmacia_id;
 
         Log.e(LOG, selectQuery);
-
 
         Cursor c = db.rawQuery(selectQuery, null);
 
@@ -194,7 +194,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + KEY_ID + " = '" + remedio_id + "'";
 
         Log.e(LOG, selectQuery);
-        Log.i("RemedioId", "id" + String.valueOf(remedio_id));
+
         Cursor c = db.rawQuery(selectQuery, null);
 
         if (c != null)
@@ -214,15 +214,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long getIdFarmaciaRemedio(long remedio_id, long farmacia_id) {
         SQLiteDatabase db = this.getReadableDatabase();
         long id = 0;
-        String farmacia = String.valueOf(remedio_id);
-        String remedio = String.valueOf(farmacia_id);
         String selectQuery = "SELECT  * FROM " + TABLE_FARMACIA_REMEDIO + " WHERE "
-                + KEY_FARMACIA_ID + " = '" + farmacia + "' AND " + KEY_REMEDIO_ID + " = '" + remedio + "'";
+                + KEY_FARMACIA_ID + " = '" + farmacia_id + "' AND " + KEY_REMEDIO_ID + " = '" + remedio_id + "'";
 
         Log.e(LOG, selectQuery);
 
         Cursor c = db.rawQuery(selectQuery, null);
-
+        Log.i("hola","ENCONTRADAS: " + c.getCount());
 
         if (c != null  && c.moveToFirst()) {
             id = c.getInt(c.getColumnIndex(KEY_ID));
@@ -231,37 +229,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return id;
     }
-    //todas las inermedias
-    public List<FarmaciaRemedio> getFarmaciaRemedios() {
-        List<FarmaciaRemedio> fr= new ArrayList<FarmaciaRemedio>();
-        SQLiteDatabase db = this.getReadableDatabase();
-
-
-        String selectQuery = "SELECT  * FROM " + TABLE_FARMACIA_REMEDIO;
-
-        Log.e(LOG, selectQuery);
-
-        Cursor c = db.rawQuery(selectQuery, null);
-
-        if (c.moveToFirst()) {
-            do {
-                FarmaciaRemedio td = new FarmaciaRemedio();
-                td.setId(c.getInt(c.getColumnIndex(KEY_ID)));
-                td.setRemedio(c.getLong(c.getColumnIndex(KEY_REMEDIO_ID)));
-                td.setFarmacia(c.getLong(c.getColumnIndex(KEY_FARMACIA_ID)));
-
-
-                // adding to farmacias list
-                fr.add(td);
-            } while (c.moveToNext());
-        }
-
-
-
-
-        return fr;
-    }
-
 
     /*
     Obtener algunos
@@ -349,6 +316,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     do {
                         Farmacia td = new Farmacia();
                         td.setId(c2.getInt((c2.getColumnIndex(KEY_ID))));
+                        Log.i("XXXXREmedio", "IDFARMACIA = " + String.valueOf(td.getId()));
                         td.setNombre((c2.getString(c2.getColumnIndex(KEY_NOMBRE))));
                         td.setDireccion(c2.getString(c2.getColumnIndex(KEY_DIRECCION)));
                         td.setPosicion(c2.getString(c2.getColumnIndex(KEY_POSICION)));
@@ -517,20 +485,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long id = db.insert(TABLE_FARMACIA_REMEDIO, null, values);
 
         return id;
-    }
-
-    //ve si existen datos
-    public boolean existen(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT  * FROM " + TABLE_FARMACIA;
-
-        Log.e(LOG, selectQuery);
-
-        Cursor c = db.rawQuery(selectQuery, null);
-        if(c.getCount()>=1){
-            return true;
-        }
-        return false;
     }
 
     // closing database

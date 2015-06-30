@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,7 @@ public class FragmentMedicamento extends Fragment {
     DatabaseHelper bd;
     View rootView;
     MyAdapter mAdapter;
-    ArrayList<String> nombreRemedios = new ArrayList<String>();
+    ArrayList<String> nombreRemedios;
     List<Remedio> remedios;
     TextView noResultados;
 
@@ -49,7 +50,10 @@ public class FragmentMedicamento extends Fragment {
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        if (savedInstanceState != null) {
+        if (savedInstanceState == null) {
+            nombreRemedios = new ArrayList<>();
+        }
+        else {
             nombreRemedios = savedInstanceState.getStringArrayList("remedios");
         }
 
@@ -86,14 +90,20 @@ public class FragmentMedicamento extends Fragment {
                     imm.hideSoftInputFromWindow(textoBuscador.getWindowToken(), 0);
 
                     remedios = bd.getAllRemediosByName(textoBuscador.getText().toString());
+                    Log.i("hola", "REMEDIOS ENCONTRADOS: " + remedios.size());
                     if (remedios.size() == 0){
                                  noResultados.setText("No se encontraron resultados.");
                     }
+
                     else {
                         for (int i = 0; i < remedios.size(); i++) {
                             nombreRemedios.add(remedios.get(i).getNombre());
+
                         }
+                        Log.i("hola", "ANTES DEL ADAPTER HAY: " + nombreRemedios.size());
                         mAdapter.addAll(nombreRemedios);
+                        Log.i("hola", "NOMBRES AGREGADOS: " + nombreRemedios.size());
+                        Log.i("hola", "ADAPTER TIENE: " + mAdapter.getCount());
                         mAdapter.notifyDataSetChanged();
                     }
                     textoBuscador.getText().clear();

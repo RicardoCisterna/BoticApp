@@ -1,8 +1,5 @@
 package BD.model;
 
-/**
- * Created by Ricardo on 29-06-2015.
- */
 public class FarmaciaRemedio {
     int id;
     long farmacia;

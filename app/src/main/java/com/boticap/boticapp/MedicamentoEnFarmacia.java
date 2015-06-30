@@ -68,11 +68,10 @@ public class MedicamentoEnFarmacia extends ActionBarActivity {
 
         //recepcion del id de la farmacia enviado
         id_farmacia_recibida = miIntent.getIntExtra("id_farmacia_seleccionada", 0);
-        Log.i("hola", "ID REMEDIO: " + id_remedio_recibido + " ID FARMACIA: " + id_farmacia_recibida);
 
         //obtiene id tabla farmacia_remedio
         //Problema: no esta encontrando resultados
-        long id_farmacia_remedio = bd.getIdFarmaciaRemedio(id_remedio_recibido, id_farmacia_recibida);
+        final long id_farmacia_remedio = bd.getIdFarmaciaRemedio(id_remedio_recibido, id_farmacia_recibida);
 
         nombreMedicamento.setText("Medicamento: " + remedio.getNombre());
         descripcionMedicamento.setText("Descripcion: " + remedio.getComentario());
@@ -95,7 +94,7 @@ public class MedicamentoEnFarmacia extends ActionBarActivity {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String fecha = sdf.format(new Date());
                         comentario = new Comentario(textComentario.getText().toString(), fecha, Integer.parseInt(textPrecio.getText().toString()));
-                        //bd.createComentario(comentario, id_farmacia_remedio);
+                        bd.createComentario(comentario, id_farmacia_remedio);
                         mAdapter.add(comentario.getComentario());
                         mAdapter.notifyDataSetChanged();
                         textComentario.getText().clear();
@@ -139,7 +138,6 @@ public class MedicamentoEnFarmacia extends ActionBarActivity {
                 // app icon in action bar clicked; go home
                 Intent intent = new Intent(contexto, MapsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                Log.i("hoola", "EL ID QUE VUELVO A ENVIAR ES: " + id_remedio_recibido);
                 intent.putExtra("id_remedio_seleccionado", id_remedio_recibido);
                 startActivity(intent);
                 return true;
