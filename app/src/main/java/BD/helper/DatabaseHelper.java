@@ -13,6 +13,7 @@ import java.util.List;
 
 import BD.model.Comentario;
 import BD.model.Farmacia;
+import BD.model.FarmaciaRemedio;
 import BD.model.Remedio;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -153,7 +154,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_COMENTARIO, comentario.getComentario());
         values.put(KEY_FECHA, comentario.getFechaHora());
         values.put(KEY_PRECIO, comentario.getPrecio());
-
         long comentario_id = db.insert(TABLE_COMENTARIO, null, values);
         return comentario_id;
     }
@@ -166,9 +166,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String selectQuery = "SELECT  * FROM " + TABLE_FARMACIA + " WHERE "
-                + KEY_ID + " = " + farmacia_id;
+                + KEY_ID + " = '" + farmacia_id +"'";
 
         Log.e(LOG, selectQuery);
+
 
         Cursor c = db.rawQuery(selectQuery, null);
 
@@ -193,7 +194,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + KEY_ID + " = '" + remedio_id + "'";
 
         Log.e(LOG, selectQuery);
-
+        Log.i("RemedioId", "id" + String.valueOf(remedio_id));
         Cursor c = db.rawQuery(selectQuery, null);
 
         if (c != null)
@@ -213,13 +214,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long getIdFarmaciaRemedio(long remedio_id, long farmacia_id) {
         SQLiteDatabase db = this.getReadableDatabase();
         long id = 0;
+        String farmacia = String.valueOf(remedio_id);
+        String remedio = String.valueOf(farmacia_id);
         String selectQuery = "SELECT  * FROM " + TABLE_FARMACIA_REMEDIO + " WHERE "
-                + KEY_FARMACIA_ID + " = '" + farmacia_id + "' AND " + KEY_REMEDIO_ID + " = '" + remedio_id + "'";
+                + KEY_FARMACIA_ID + " = '" + farmacia + "' AND " + KEY_REMEDIO_ID + " = '" + remedio + "'";
 
         Log.e(LOG, selectQuery);
 
         Cursor c = db.rawQuery(selectQuery, null);
-        Log.i("hola","ENCONTRADAS: " + c.getCount());
+
 
         if (c != null  && c.moveToFirst()) {
             id = c.getInt(c.getColumnIndex(KEY_ID));
@@ -228,6 +231,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return id;
     }
+    //todas las inermedias
+    public List<FarmaciaRemedio> getFarmaciaRemedios() {
+        List<FarmaciaRemedio> fr= new ArrayList<FarmaciaRemedio>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+
+        String selectQuery = "SELECT  * FROM " + TABLE_FARMACIA_REMEDIO;
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c.moveToFirst()) {
+            do {
+                FarmaciaRemedio td = new FarmaciaRemedio();
+                td.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                td.setRemedio(c.getLong(c.getColumnIndex(KEY_REMEDIO_ID)));
+                td.setFarmacia(c.getLong(c.getColumnIndex(KEY_FARMACIA_ID)));
+
+
+                // adding to farmacias list
+                fr.add(td);
+            } while (c.moveToNext());
+        }
+
+
+
+
+        return fr;
+    }
+
 
     /*
     Obtener algunos
@@ -290,8 +324,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //Obtener farmacias que tienen el remedio X
     public List<Farmacia> getFarmaciasConXRemedio(long id_remedio_x) {
         List<Farmacia> farmacias = new ArrayList<Farmacia>();
-        String selectQuery = "SELECT  * FROM " + TABLE_FARMACIA + " tf, " + TABLE_FARMACIA_REMEDIO + " tfr WHERE tfr."
-                + KEY_REMEDIO_ID + " = '" + id_remedio_x + "' AND tf." + KEY_ID + " = tfr." + KEY_FARMACIA_ID ;
+        String selectQuery = "SELECT  * FROM " + TABLE_FARMACIA_REMEDIO +  " WHERE "
+                + KEY_REMEDIO_ID + " = '" + id_remedio_x +"'";
 
         Log.e(LOG, selectQuery);
 
@@ -301,14 +335,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
-                Farmacia td = new Farmacia();
-                td.setId(c.getInt((c.getColumnIndex(KEY_ID))));
-                td.setNombre((c.getString(c.getColumnIndex(KEY_NOMBRE))));
-                td.setDireccion(c.getString(c.getColumnIndex(KEY_DIRECCION)));
-                td.setPosicion(c.getString(c.getColumnIndex(KEY_POSICION)));
+                FarmaciaRemedio fr = new FarmaciaRemedio();
+                fr.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                fr.setFarmacia(c.getLong(c.getColumnIndex(KEY_FARMACIA_ID)));
+                fr.setRemedio(c.getLong(c.getColumnIndex(KEY_REMEDIO_ID)));
+                selectQuery = "SELECT  * FROM " + TABLE_FARMACIA  + " WHERE "
+                        + KEY_ID + " = '" + fr.getFarmacia()+ "'";
 
-                // adding to farmacias list
-                farmacias.add(td);
+                Log.e(LOG, selectQuery);
+
+                Cursor c2 = db.rawQuery(selectQuery, null);
+                if (c2.moveToFirst()) {
+                    do {
+                        Farmacia td = new Farmacia();
+                        td.setId(c2.getInt((c2.getColumnIndex(KEY_ID))));
+                        td.setNombre((c2.getString(c2.getColumnIndex(KEY_NOMBRE))));
+                        td.setDireccion(c2.getString(c2.getColumnIndex(KEY_DIRECCION)));
+                        td.setPosicion(c2.getString(c2.getColumnIndex(KEY_POSICION)));
+                        // adding to farmacias list
+                        farmacias.add(td);
+                    } while (c2.moveToNext());
+                }
+
             } while (c.moveToNext());
         }
 
@@ -469,6 +517,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long id = db.insert(TABLE_FARMACIA_REMEDIO, null, values);
 
         return id;
+    }
+
+    //ve si existen datos
+    public boolean existen(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT  * FROM " + TABLE_FARMACIA;
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+        if(c.getCount()>=1){
+            return true;
+        }
+        return false;
     }
 
     // closing database
