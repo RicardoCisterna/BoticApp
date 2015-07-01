@@ -145,17 +145,6 @@ public class MedicamentoEnFarmacia extends ActionBarActivity {
                 alert.show();
             }
         });
-
-        //listview de los comentarios
-        //listaComentarios = bd.getAllComentariosFarmaciaRemedio(id_farmacia_remedio);
-        //if(!listaComentarios.isEmpty()) {
-            //for (int i = 0; i < listaComentarios.size(); i++) {
-                //Log.i("hola", "COMENTARIO Y PRECIO SON: " + listaComentarios.get(i).getComentario() + " " + listaComentarios.get(i).getPrecio());
-                //descripcionComentarios.add(listaComentarios.get(i).getComentario());
-              //  precioComentario.add(listaComentarios.get(i).getPrecio());
-            //}
-        //}
-
     }
 
 

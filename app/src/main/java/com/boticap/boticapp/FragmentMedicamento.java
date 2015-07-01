@@ -75,7 +75,6 @@ public class FragmentMedicamento extends Fragment {
             public void onClick(View v) {
                 noResultados.setText("");
                 mAdapter.clear();
-                nombreRemedios.clear();
                 Editable nombreMedicamentoBuscado = textoBuscador.getText();
                 if (nombreMedicamentoBuscado.toString().isEmpty()){
                     new AlertDialog.Builder(getActivity())
@@ -98,11 +97,11 @@ public class FragmentMedicamento extends Fragment {
 
                     else {
                         for (int i = 0; i < remedios.size(); i++) {
-                            nombreRemedios.add(remedios.get(i).getNombre());
-
+                            //nombreRemedios.add(remedios.get(i).getNombre());
+                            mAdapter.add(remedios.get(i).getNombre());
                         }
                         Log.i("hola", "ANTES DEL ADAPTER HAY: " + nombreRemedios.size());
-                        mAdapter.addAll(nombreRemedios);
+                        //mAdapter.addAll(nombreRemedios);
                         Log.i("hola", "NOMBRES AGREGADOS: " + nombreRemedios.size());
                         Log.i("hola", "ADAPTER TIENE: " + mAdapter.getCount());
                         mAdapter.notifyDataSetChanged();
