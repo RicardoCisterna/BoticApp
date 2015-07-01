@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -90,16 +91,25 @@ public class MedicamentoEnFarmacia extends ActionBarActivity {
                 textComentario = (EditText)inflator.findViewById(R.id.textComentario);
                 builder.setPositiveButton("Agregar", new DialogInterface.OnClickListener(){
 
-                    public void onClick(DialogInterface dialog, int which){
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        String fecha = sdf.format(new Date());
-                        comentario = new Comentario(textComentario.getText().toString(), fecha, Integer.parseInt(textPrecio.getText().toString()));
-                        bd.createComentario(comentario, id_farmacia_remedio);
-                        mAdapter.add(comentario.getComentario());
-                        mAdapter.notifyDataSetChanged();
-                        textComentario.getText().clear();
-                        textPrecio.getText().clear();
-                        dialog.dismiss();
+                    public void onClick(DialogInterface dialog, int which) {
+                        Editable editablePrecio = textPrecio.getText();
+                        Editable editableComentario = textComentario.getText();
+                        if (editablePrecio.toString().isEmpty() || editableComentario.toString().isEmpty()) {
+                            Toast.makeText(MedicamentoEnFarmacia.this, "Comentario no agregado. El precio y el comentario son obligatorios.",
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+
+                        } else {
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            String fecha = sdf.format(new Date());
+                            comentario = new Comentario(textComentario.getText().toString(), fecha, Integer.parseInt(textPrecio.getText().toString()));
+                            bd.createComentario(comentario, id_farmacia_remedio);
+                            mAdapter.add(comentario.getComentario());
+                            mAdapter.notifyDataSetChanged();
+                            textComentario.getText().clear();
+                            textPrecio.getText().clear();
+                            dialog.dismiss();
+                        }
                     }
                 });
                 builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener(){

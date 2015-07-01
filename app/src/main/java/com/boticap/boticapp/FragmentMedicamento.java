@@ -63,7 +63,8 @@ public class FragmentMedicamento extends Fragment {
         listadoMedicamentos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent miIntent = new Intent(getActivity(), MapsActivity.class);
+                Intent miIntent = new Intent(getActivity(), OpcionesMedicamento.class);
+                //se envia el id del medicamento selccionado
                 miIntent.putExtra("id_remedio_seleccionado", (long) remedios.get(position).getId());
                 startActivity(miIntent);
             }
@@ -78,7 +79,7 @@ public class FragmentMedicamento extends Fragment {
                 Editable nombreMedicamentoBuscado = textoBuscador.getText();
                 if (nombreMedicamentoBuscado.toString().isEmpty()){
                     new AlertDialog.Builder(getActivity())
-                            .setTitle("Error")
+                            .setTitle("Información")
                             .setMessage("Debe ingresar el nombre de un Medicamento.")
                             .setPositiveButton("Ok", null)
                             .show();

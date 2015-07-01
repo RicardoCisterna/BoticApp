@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -71,11 +70,7 @@ public class MainActivity extends Activity {
                     long fr7 = db.createFarmaciaRemedio(far3_id, re2_id);
                     long fr8 = db.createFarmaciaRemedio(far3_id, re3_id);
 
-
-                    db.getFarmaciaRemedios();
-
                     // Don't forget to close database connection
-                    
                     db.closeDB();
                 }
                 Intent intent = new Intent(contexto,TipoDeBusqueda.class);

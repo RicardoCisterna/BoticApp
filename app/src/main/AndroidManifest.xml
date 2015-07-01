@@ -46,6 +46,10 @@
             android:name=".MedicamentoEnFarmacia"
             android:label="@string/title_activity_medicamento_en_farmacia" >
         </activity>
+        <activity
+            android:name=".OpcionesMedicamento"
+            android:label="@string/title_activity_opciones_medicamento" >
+        </activity>
     </application>
 
 </manifest>

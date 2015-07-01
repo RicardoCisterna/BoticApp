@@ -14,4 +14,6 @@
     <string name="farmacias_cercanas">FARMACIAS CERCANAS</string>
     <string name="title_activity_medicamento_en_farmacia">Medicamento</string>
     <string name="buscar_medicamento">Nombre medicamento</string>
+    <string name="farmacias_disponibles">DISPONIBILIDAD</string>
+    <string name="title_activity_opciones_medicamento">Medicamento</string>
 </resources>

@@ -17,8 +17,6 @@ import BD.model.FarmaciaRemedio;
 import BD.model.Remedio;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-
-
     // Logcat tag
     private static final String LOG = "DatabaseHelper";
 
@@ -28,7 +26,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "BoticappBd";
 
-    
     // Table Names
     private static final String TABLE_COMENTARIO = "comentario";
     private static final String TABLE_FARMACIA = "farmacia";
@@ -486,6 +483,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long id = db.insert(TABLE_FARMACIA_REMEDIO, null, values);
 
         return id;
+    }
+
+    //ve si existen datos
+    public boolean existen(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT  * FROM " + TABLE_FARMACIA;
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+        if(c.getCount()>=1){
+            return true;
+        }
+        return false;
     }
 
     // closing database

@@ -1,18 +1,13 @@
 package com.boticap.boticapp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
-
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
 
 import android.widget.Toast;
@@ -109,15 +104,6 @@ public class TipoDeBusqueda extends ActionBarActivity implements  OnQueryTextLis
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_tipo_de_busqueda, menu);
-        setContentView(R.layout.activity_tipo_de_busqueda);
-        getMenuInflater().inflate(R.menu.menu_busqueda_medicamento, menu);
-
-        MenuItem searchItem = menu.findItem(R.id.menu3_buscar);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setOnQueryTextListener(this);
-
-        MenuItemCompat.setOnActionExpandListener(searchItem, this);
-
         return super.onCreateOptionsMenu(menu);
     }
 /* por ahora no tiene sentido

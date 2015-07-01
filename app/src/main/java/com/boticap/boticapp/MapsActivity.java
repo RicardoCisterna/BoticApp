@@ -45,6 +45,7 @@ public class MapsActivity extends ActionBarActivity implements LocationListener 
     boolean canGetLocation = false;
     Map haspMap = new HashMap();
     ActionBar actionBar;
+    long id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +78,7 @@ public class MapsActivity extends ActionBarActivity implements LocationListener 
 
         //Si el intent viene desde el buscador de medicamento, se va a mostrar solamente las farmacias que tienen un X medicamento
         if (intent.getLongExtra("id_remedio_seleccionado", 0) != 0){
-            long id = intent.getLongExtra("id_remedio_seleccionado", 0);
+            id = intent.getLongExtra("id_remedio_seleccionado", 0);
             listaFarmacias = db.getFarmaciasConXRemedio(id);
             for (int i = 0; i < listaFarmacias.size(); i++) {
                 String[] pos = listaFarmacias.get(i).getPosicion().split(" ");
@@ -281,8 +282,9 @@ public class MapsActivity extends ActionBarActivity implements LocationListener 
         switch (item.getItemId()) {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
-                Intent intent = new Intent(this, TipoDeBusqueda.class);
+                Intent intent = new Intent(this, OpcionesMedicamento.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("id_remedio_seleccionado" ,id);
                 startActivity(intent);
                 return true;
             default:
