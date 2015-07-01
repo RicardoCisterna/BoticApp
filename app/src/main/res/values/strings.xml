@@ -16,4 +16,5 @@
     <string name="buscar_medicamento">Nombre medicamento</string>
     <string name="farmacias_disponibles">DISPONIBILIDAD</string>
     <string name="title_activity_opciones_medicamento">Medicamento</string>
+    <string name="nuevo_precio">NUEVO PRECIO</string>
 </resources>

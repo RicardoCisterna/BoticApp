@@ -40,15 +40,22 @@
             android:layout_height="match_parent"
             android:id="@+id/botonAgregarComentario"
             android:layout_gravity="right"
-            android:text="Agregar Comentario"/>
+            android:text="@string/nuevo_precio"/>
         </LinearLayout>
-
+    <View
+        android:id="@+id/lineaDivisora"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/linearLayout"
+        android:layout_marginTop="10dp"/>
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listViewComentarios"
-        android:layout_below="@+id/linearLayout"
+        android:layout_below="@+id/lineaDivisora"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"/>
 
 </RelativeLayout>

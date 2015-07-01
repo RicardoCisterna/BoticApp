@@ -87,9 +87,8 @@ public class MapsActivity extends ActionBarActivity implements LocationListener 
                 Marker m = mMap.addMarker(new MarkerOptions()
                                     .title(listaFarmacias.get(i).getNombre())
                                     .snippet(listaFarmacias.get(i).getDireccion())
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                                     .position(latLong)
-
+                                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.boticapp))
                 );
                 //se crea un map donde se relaciona un marker con el id de la farmacia
                 haspMap.put(m.getId(), listaFarmacias.get(i).getId());
@@ -118,17 +117,18 @@ public class MapsActivity extends ActionBarActivity implements LocationListener 
             for (int i = 0; i < listaFarmacias.size(); i++) {
                 String[] pos = listaFarmacias.get(i).getPosicion().split(" ");
                 LatLng latLong = new LatLng(Double.valueOf(pos[0]), Double.valueOf(pos[1]));
+                //se agrega un marcador al mapa
                 mMap.addMarker(new MarkerOptions()
                                 .title(listaFarmacias.get(i).getNombre())
                                 .snippet(listaFarmacias.get(i).getDireccion())
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.boticapp))
                                 .position(latLong)
                 );
             }
         }
-        //this.deleteDatabase("boticapp.db");
     }
 
+    //funcion que sirve para encontrar las coordenas de la posicion actual
     public Location getLocation() {
         try {
             locationManager = (LocationManager) this.getApplicationContext()
@@ -221,6 +221,7 @@ public class MapsActivity extends ActionBarActivity implements LocationListener 
     public void onLocationChanged(Location location) {
     }
 
+    //cuadro de dialogo cuando el gps está desactivado
     public void dialogGPS(){
         AlertDialog.Builder builder = new AlertDialog.Builder(contexto);
         builder.setTitle("Gps desactivado");
@@ -242,6 +243,7 @@ public class MapsActivity extends ActionBarActivity implements LocationListener 
         alert.show();
     }
 
+    //mueve la camara del mapa a la ubicacion actual
     public void moverCamara(){
         Location ubicacion = getLocation();
         if (ubicacion != null) {
@@ -281,10 +283,9 @@ public class MapsActivity extends ActionBarActivity implements LocationListener 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // app icon in action bar clicked; go home
-                Intent intent = new Intent(this, OpcionesMedicamento.class);
+                //boton de volver atrás
+                Intent intent = new Intent(this, TipoDeBusqueda.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("id_remedio_seleccionado" ,id);
                 startActivity(intent);
                 return true;
             default:

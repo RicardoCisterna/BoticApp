@@ -1,12 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
 
-    <TextView
-        android:id="@+id/casilla"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        android:orientation="vertical"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp">
+        <LinearLayout
+            android:id="@+id/linearlayoutUsuario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/nombreUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Usuario"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:padding="2dp" />
+            <TextView
+                android:id="@+id/precio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Medium Text"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:padding="2dp"
+                android:textColor="#33CC33" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/fecha_comentario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:layout_marginLeft="10dp"
+            android:layout_below="@+id/linearlayoutUsuario"
+            android:textAppearance="?android:attr/textAppearanceSmall"/>
+        <TextView
+            android:id="@+id/comentario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/fecha_comentario"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+    </LinearLayout>
 
 </LinearLayout>

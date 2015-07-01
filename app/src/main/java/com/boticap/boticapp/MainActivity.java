@@ -50,8 +50,8 @@ public class MainActivity extends Activity {
                     long far3_id = db.createFarmacia(far3);
 
                     //Remedios
-                    Remedio re1 = new Remedio("viadil", "gotas");
-                    Remedio re2 = new Remedio("Paracetamol", "500mg");
+                    Remedio re1 = new Remedio("iadil", "Gotas");
+                    Remedio re2 = new Remedio("paracetamol", "500mg");
                     Remedio re3 = new Remedio("nastizol", "300mg");
 
                     //guardar remdios

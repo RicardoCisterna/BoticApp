@@ -1,9 +1,12 @@
 package com.boticap.boticapp;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,10 +45,10 @@ public class MedicamentoEnFarmacia extends ActionBarActivity {
     EditText textComentario;
     MyAdapter mAdapter;
     List<Comentario> listaComentarios;
-    ArrayList<String> descripcionComentarios = new ArrayList<String>();
     ActionBar actionBar;
     long id_remedio_recibido;
     long id_farmacia_recibida;
+    ArrayList<FilaListView> filas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +78,22 @@ public class MedicamentoEnFarmacia extends ActionBarActivity {
         //Problema: no esta encontrando resultados
         final long id_farmacia_remedio = bd.getIdFarmaciaRemedio(id_remedio_recibido, id_farmacia_recibida);
 
+        if(savedInstanceState == null){
+            listaComentarios = bd.getAllComentariosFarmaciaRemedio(id_farmacia_remedio);
+            filas = new ArrayList<>();
+            for (int i = 0; i < listaComentarios.size(); i++) {
+                //Log.i("hola", "COMENTARIO Y PRECIO SON: " + listaComentarios.get(i).getComentario() + " " + listaComentarios.get(i).getPrecio());
+                filas.add(new FilaListView(listaComentarios.get(i).getComentario(),
+                        String.valueOf(listaComentarios.get(i).getPrecio()), listaComentarios.get(i).getFechaHora()));
+            }
+        }
+        else{
+            filas = savedInstanceState.getParcelableArrayList("filas");
+        }
+
+        mAdapter = new MyAdapter(this, filas);
+        comentariosUsuarios.setAdapter(mAdapter);
+
         nombreMedicamento.setText("Medicamento: " + remedio.getNombre());
         descripcionMedicamento.setText("Descripcion: " + remedio.getComentario());
 
@@ -100,11 +120,14 @@ public class MedicamentoEnFarmacia extends ActionBarActivity {
                                     .show();
 
                         } else {
+                            //descripcionComentarios.clear();
+                            //precioComentario.clear();
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             String fecha = sdf.format(new Date());
                             comentario = new Comentario(textComentario.getText().toString(), fecha, Integer.parseInt(textPrecio.getText().toString()));
                             bd.createComentario(comentario, id_farmacia_remedio);
-                            mAdapter.add(comentario.getComentario());
+                            FilaListView nuevaFila = new FilaListView(comentario.getComentario(), String.valueOf(comentario.getPrecio()), comentario.getFechaHora());
+                            mAdapter.add(nuevaFila);
                             mAdapter.notifyDataSetChanged();
                             textComentario.getText().clear();
                             textPrecio.getText().clear();
@@ -124,12 +147,14 @@ public class MedicamentoEnFarmacia extends ActionBarActivity {
         });
 
         //listview de los comentarios
-        listaComentarios = bd.getAllComentariosFarmaciaRemedio(id_farmacia_remedio);
-        for (int i = 0; i < listaComentarios.size(); i++) {
-            descripcionComentarios.add(listaComentarios.get(i).getComentario());
-        }
-        mAdapter = new MyAdapter(this,android.R.layout.simple_list_item_1, descripcionComentarios);
-        comentariosUsuarios.setAdapter(mAdapter);
+        //listaComentarios = bd.getAllComentariosFarmaciaRemedio(id_farmacia_remedio);
+        //if(!listaComentarios.isEmpty()) {
+            //for (int i = 0; i < listaComentarios.size(); i++) {
+                //Log.i("hola", "COMENTARIO Y PRECIO SON: " + listaComentarios.get(i).getComentario() + " " + listaComentarios.get(i).getPrecio());
+                //descripcionComentarios.add(listaComentarios.get(i).getComentario());
+              //  precioComentario.add(listaComentarios.get(i).getPrecio());
+            //}
+        //}
 
     }
 
@@ -159,12 +184,79 @@ public class MedicamentoEnFarmacia extends ActionBarActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putStringArrayList("comentarios", descripcionComentarios);
+        outState.putParcelableArrayList("filas", filas);
     }
 
-    private class MyAdapter extends ArrayAdapter<String> {
-        public MyAdapter(Context context, int resource, List<String> objects) {
-            super(context, resource, objects);
+    private class MyAdapter extends ArrayAdapter<FilaListView> {
+
+        private final Activity context;
+        private ArrayList<FilaListView> filas;
+
+        public MyAdapter(Activity context, ArrayList<FilaListView> filas) {
+            super(context, R.layout.casilla, filas);
+            this.context = context;
+            this.filas = filas;
+        }
+        public View getView(int position,View view,ViewGroup parent) {
+            LayoutInflater inflater=context.getLayoutInflater();
+            View rowView=inflater.inflate(R.layout.casilla, null,true);
+
+            TextView txtPrecio = (TextView) rowView.findViewById(R.id.precio);
+            TextView txtFecha = (TextView) rowView.findViewById(R.id.fecha_comentario);
+            TextView txtComentario = (TextView) rowView.findViewById(R.id.comentario);
+
+            txtPrecio.setText("$" + filas.get(position).getPrecio());
+            txtFecha.setText(filas.get(position).getFecha());
+            txtComentario.setText(filas.get(position).getItemName());
+            return rowView;
+
+        }
+    }
+
+    public class FilaListView implements Parcelable{
+
+        private String itemName;
+        private String precio;
+        private String fecha;
+
+        public FilaListView(String itemName, String precio, String fecha){
+            this.itemName = itemName;
+            this.precio = precio;
+            this.fecha = fecha;
+        }
+
+        public String getItemName() {
+            return itemName;
+        }
+
+        public String getPrecio() {
+            return precio;
+        }
+
+        public void setItemName(String itemName) {
+            this.itemName = itemName;
+        }
+
+        public void setPrecio(String precio) {
+            this.precio = precio;
+        }
+
+        public String getFecha() {
+            return fecha;
+        }
+
+        public void setFecha(String fecha) {
+            this.fecha = fecha;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+
         }
     }
 }
